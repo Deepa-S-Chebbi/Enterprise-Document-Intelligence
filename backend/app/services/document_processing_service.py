@@ -15,6 +15,7 @@ from app.exceptions.pipeline_exceptions import (
     PipelineExtractionStageError,
     PipelineOCRStageError,
 )
+from app.services.document_indexing_service import DocumentIndexingService
 from app.services.extraction_service import ExtractionService
 from app.services.ocr_service import OCRService
 
@@ -27,6 +28,8 @@ class DocumentProcessingService:
         ↓
     OCR
         ↓
+    Semantic Indexing
+        ↓
     Extraction
 
     Persists a Document, OCRResult, and ExtractionResult row via the
@@ -34,6 +37,11 @@ class DocumentProcessingService:
 
     OCRService and ExtractionService remain database-agnostic; this
     service is the only place that knows persistence exists.
+
+    DocumentIndexingService handles:
+        - text chunking
+        - embedding generation
+        - Qdrant vector storage
     """
 
     def __init__(
@@ -44,6 +52,8 @@ class DocumentProcessingService:
     ):
         self.ocr_service = OCRService()
         self.extraction_service = ExtractionService()
+        self.indexing_service = DocumentIndexingService()
+
         self.document_repo = document_repo
         self.ocr_repo = ocr_repo
         self.extraction_repo = extraction_repo
@@ -86,12 +96,18 @@ class DocumentProcessingService:
             print("OCR completed successfully.")
 
         except OCRException as e:
-            self.document_repo.update_status(document.id, "failed")
+            self.document_repo.update_status(
+                document.id,
+                "failed",
+            )
+
             raise PipelineOCRStageError(
                 f"OCR stage failed: {e}"
             ) from e
 
-        # Combine all page text
+        # -----------------------------
+        # Combine OCR page text
+        # -----------------------------
         document_text = "\n\n".join(
             page.extracted_text
             for page in ocr_result.pages
@@ -105,6 +121,9 @@ class DocumentProcessingService:
         else:
             ocr_average_confidence = 0.0
 
+        # -----------------------------
+        # Save OCR result
+        # -----------------------------
         print("Saving OCR result...")
 
         self.ocr_repo.create(
@@ -125,6 +144,32 @@ class DocumentProcessingService:
         print("Document status updated -> ocr_complete")
 
         # -----------------------------
+        # Stage 1.5 - Semantic Indexing
+        # -----------------------------
+        try:
+            print("\n===== Starting Semantic Indexing =====")
+
+            indexed_chunks = self.indexing_service.index_document(
+                document_id=str(document.id),
+                text=document_text,
+            )
+
+            print(
+                f"Semantic indexing completed: "
+                f"{indexed_chunks} chunks indexed."
+            )
+
+        except Exception as e:
+            self.document_repo.update_status(
+                document.id,
+                "failed",
+            )
+
+            raise RuntimeError(
+                f"Semantic indexing stage failed: {e}"
+            ) from e
+
+        # -----------------------------
         # Stage 2 - Extraction
         # -----------------------------
         try:
@@ -138,11 +183,18 @@ class DocumentProcessingService:
             print("Extraction completed.")
 
         except ExtractionException as e:
-            self.document_repo.update_status(document.id, "failed")
+            self.document_repo.update_status(
+                document.id,
+                "failed",
+            )
+
             raise PipelineExtractionStageError(
                 f"Extraction stage failed: {e}"
             ) from e
 
+        # -----------------------------
+        # Save extraction result
+        # -----------------------------
         print("Saving extraction result...")
 
         self.extraction_repo.create(
@@ -155,6 +207,9 @@ class DocumentProcessingService:
 
         print("Extraction result saved.")
 
+        # -----------------------------
+        # Complete document processing
+        # -----------------------------
         print("Updating document status -> extraction_complete")
 
         self.document_repo.update_status(
@@ -168,6 +223,8 @@ class DocumentProcessingService:
             document.id
         )
 
-        print("\n===== Pipeline Finished Successfully =====\n")
+        print(
+            "\n===== Pipeline Finished Successfully =====\n"
+        )
 
         return extraction_result
