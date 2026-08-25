@@ -6,7 +6,6 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
-from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
 
@@ -33,16 +32,11 @@ TestingSessionLocal = sessionmaker(
 
 
 # ------------------------------------------------------------------
-# Database fixture
+# Database safety check
 # ------------------------------------------------------------------
 
 @pytest.fixture(scope="session", autouse=True)
 def verify_test_database():
-    """
-    Verify that integration tests are connected to the
-    dedicated test database.
-    """
-
     with engine.connect() as connection:
         database_name = connection.execute(
             text("SELECT current_database()")
@@ -55,15 +49,52 @@ def verify_test_database():
 
 
 # ------------------------------------------------------------------
+# Database cleanup
+# ------------------------------------------------------------------
+
+@pytest.fixture(autouse=True)
+def clean_database():
+    """
+    Clean test data before and after every integration test.
+    """
+
+    with TestingSessionLocal() as session:
+        session.execute(
+            text(
+                """
+                TRUNCATE TABLE
+                    extraction_results,
+                    ocr_results,
+                    documents
+                RESTART IDENTITY CASCADE
+                """
+            )
+        )
+        session.commit()
+
+    yield
+
+    with TestingSessionLocal() as session:
+        session.execute(
+            text(
+                """
+                TRUNCATE TABLE
+                    extraction_results,
+                    ocr_results,
+                    documents
+                RESTART IDENTITY CASCADE
+                """
+            )
+        )
+        session.commit()
+
+
+# ------------------------------------------------------------------
 # Database session fixture
 # ------------------------------------------------------------------
 
 @pytest.fixture
 def db_session():
-    """
-    Provide a database session for integration tests.
-    """
-
     session = TestingSessionLocal()
 
     try:
@@ -79,10 +110,6 @@ def db_session():
 
 @pytest.fixture
 def client():
-    """
-    Provide a FastAPI TestClient using the test database.
-    """
-
     def override_get_db():
         db = TestingSessionLocal()
 
