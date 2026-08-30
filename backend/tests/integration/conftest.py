@@ -14,9 +14,9 @@ from app.main import app
 # Integration test database
 # ------------------------------------------------------------------
 
-TEST_DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    settings.database_url,
+TEST_DATABASE_URL = (
+    "postgresql+psycopg://docint:docint_password"
+    "@localhost:5432/document_intelligence_test"
 )
 
 engine = create_engine(
