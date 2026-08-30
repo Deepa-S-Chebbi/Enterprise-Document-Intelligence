@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.repositories.document_repository import (
@@ -17,6 +17,7 @@ from app.services.document_processing_service import (
 from app.services.document_query_service import (
     DocumentQueryService,
 )
+from app.services.rag_qa_service import RAGQAService
 
 
 def get_document_repository(
@@ -71,3 +72,16 @@ def get_document_query_service(
         ocr_repo=ocr_repo,
         extraction_repo=extraction_repo,
     )
+
+
+def get_rag_qa_service() -> RAGQAService:
+    try:
+        return RAGQAService()
+    except Exception as e:
+        # Constructing the service touches the embedding model and the
+        # vector store; if either is unavailable, surface it as a
+        # gateway failure rather than an unhandled 500.
+        raise HTTPException(
+            status_code=502,
+            detail=f"RAG pipeline is currently unavailable: {e}",
+        ) from e
