@@ -1,0 +1,246 @@
+{
+  "name": "Document Processing Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "document-process",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b5fa5b80-1b29-4d52-ae5d-33ec2cd46070",
+      "name": "Webhook",
+      "webhookId": "280ab05c-4c2b-4a77-9e27-833ea72083ed"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/api/v1/documents/process",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "46a822a7-b10e-43e3-a3d3-2fa751ce7389",
+      "name": "HTTP Request",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9d5e85a6-8f83-4b0a-8d96-938ffcceddd8",
+              "leftValue": "={{ $json.requires_review }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        -80
+      ],
+      "id": "638e017a-56c2-4493-bd97-717783638362",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "df1bed12-c492-49fc-a5c2-8f1811017c94",
+              "name": "status",
+              "value": "requires_human_review",
+              "type": "string"
+            },
+            {
+              "id": "fbc7299d-de44-4ec2-90a7-fdd7a89f2884",
+              "name": "document_id",
+              "value": "={{ $json.document_id }}",
+              "type": "string"
+            },
+            {
+              "id": "3247e08f-3f4b-4434-aec7-08bd9d12065f",
+              "name": "confidence",
+              "value": "={{ $json.overall_confidence }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        -112
+      ],
+      "id": "9ebac98a-22ce-4298-983e-6480b659e1a0",
+      "name": "Human Review Required"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "541c5aef-fd51-4caf-9257-5e83a11660a6",
+              "name": "status",
+              "value": "automatically_approved",
+              "type": "string"
+            },
+            {
+              "id": "521d0118-4e5b-418b-8720-05cdfabba844",
+              "name": "document_id",
+              "value": "={{ $json.document_id }}",
+              "type": "string"
+            },
+            {
+              "id": "a903f1f2-eed6-4a2a-bd72-dd62b826740c",
+              "name": "confidence",
+              "value": "={{ $json.overall_confidence }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        48
+      ],
+      "id": "9209557b-67f5-4e39-b194-c753f2397864",
+      "name": "Auto Approved"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c49050bf-63f9-4a44-89ba-67da6d12ae55",
+              "name": "status",
+              "value": "processing_failed",
+              "type": "string"
+            },
+            {
+              "id": "36360e65-5c2d-47e6-b3cd-6d5148dc9971",
+              "name": "error",
+              "value": "={{ $json.error.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        144
+      ],
+      "id": "041ff71e-8e4d-4aef-88be-674ea89774e6",
+      "name": "Processing Error"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Processing Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Human Review Required",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Auto Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "22c47407-824e-4153-920d-118b2a7de9fe",
+  "meta": {
+    "instanceId": "2d46905008e02a80ad7de5853269ada0dd0ce1827260e6a15ba3836d1eca97db"
+  },
+  "nodeGroups": [],
+  "id": "X4DPk078CgdqgYDp",
+  "tags": []
+}

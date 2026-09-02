@@ -1,0 +1,57 @@
+{
+  "name": "FastAPI Health Check",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "198d3821-d6c3-4c52-91ec-c1d966f0e66f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:8000/api/v1/health",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        144,
+        0
+      ],
+      "id": "2746863d-cefe-4184-ab0e-c139d68682e9",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b38ae934-f04b-4fcf-8af5-8eb81e5c0490",
+  "meta": {
+    "instanceId": "2d46905008e02a80ad7de5853269ada0dd0ce1827260e6a15ba3836d1eca97db"
+  },
+  "nodeGroups": [],
+  "id": "ilXIDf5cysJFnRHc",
+  "tags": []
+}
