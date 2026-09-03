@@ -13,6 +13,7 @@ from app.exceptions.ocr_exceptions import (
 )
 from app.exceptions.pipeline_exceptions import (
     PipelineExtractionStageError,
+    PipelineIndexingStageError,
     PipelineOCRStageError,
 )
 from app.services.document_indexing_service import DocumentIndexingService
@@ -165,7 +166,7 @@ class DocumentProcessingService:
                 "failed",
             )
 
-            raise RuntimeError(
+            raise PipelineIndexingStageError(
                 f"Semantic indexing stage failed: {e}"
             ) from e
 

@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import get_rag_qa_service
@@ -6,6 +8,8 @@ from app.schemas.qa import QARequest, QAResponse
 from app.services.rag_qa_service import RAGQAService
 
 router = APIRouter()
+
+logger = logging.getLogger(__name__)
 
 
 @router.post(
@@ -23,19 +27,44 @@ def ask_question(
             limit=payload.limit,
             document_id=payload.document_id,
         )
+
     except ValueError as e:
         # Bad input (empty query, invalid limit, etc.)
-        raise HTTPException(status_code=400, detail=str(e)) from e
+        raise HTTPException(
+            status_code=400,
+            detail=str(e),
+        ) from e
+
     except LLMProviderError as e:
-        # Upstream LLM provider (Gemini) failed
-        raise HTTPException(status_code=502, detail=str(e)) from e
-    except Exception as e:
-        # Any other downstream dependency failure (e.g. vector store
-        # unreachable) is treated as a bad gateway rather than a 500,
-        # since the API layer itself did nothing wrong.
+        # Log the raw provider error internally,
+        # but never expose it to the client.
+        logger.error(
+            "LLM provider error during RAG QA: %s",
+            e,
+        )
+
         raise HTTPException(
             status_code=502,
-            detail=f"RAG pipeline is currently unavailable: {e}",
+            detail=(
+                "The AI service is temporarily unavailable. "
+                "Please try again later."
+            ),
+        ) from e
+
+    except Exception as e:
+        # Log unexpected downstream errors internally,
+        # but return a safe message to the client.
+        logger.error(
+            "Unexpected RAG pipeline error: %s",
+            e,
+        )
+
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "The document question-answering service is "
+                "temporarily unavailable. Please try again later."
+            ),
         ) from e
 
     return QAResponse(

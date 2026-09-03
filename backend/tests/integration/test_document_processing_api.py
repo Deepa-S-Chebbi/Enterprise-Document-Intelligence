@@ -156,7 +156,10 @@ def test_process_document_handles_ocr_failure(
     data = response.json()
 
     assert data["stage"] == "ocr"
-    assert "OCR stage failed" in data["detail"]
+    assert data["detail"] == (
+        "Document OCR processing failed. "
+        "Please try again later."
+    )
 
     # --------------------------------------------------------------
     # Verify document was persisted and marked as failed
@@ -256,7 +259,10 @@ def test_process_document_handles_extraction_failure(
     data = response.json()
 
     assert data["stage"] == "extraction"
-    assert "Extraction stage failed" in data["detail"]
+    assert data["detail"] == (
+        "Document information extraction failed. "
+        "Please try again later."
+    )
 
     document = (
         db_session.query(Document)
