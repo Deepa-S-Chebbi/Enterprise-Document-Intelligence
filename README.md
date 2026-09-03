@@ -1,330 +1,593 @@
-# 🚀 Enterprise Document Intelligence Platform
+# Enterprise Document Intelligence Platform
 
-> A production-grade AI-powered document processing platform that automates OCR, intelligent information extraction, structured data persistence, and enterprise document workflows.
+> An AI-powered enterprise document processing platform that transforms unstructured PDF documents into structured data, searchable knowledge, and automated workflows.
 
-<p align="center">
-
-![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-Production-009688?logo=fastapi)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Integrated-4169E1?logo=postgresql)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST_API-009688?logo=fastapi)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-CC2927)
+![Alembic](https://img.shields.io/badge/Alembic-Migrations-3776AB)
+![Qdrant](https://img.shields.io/badge/Qdrant-Vector_DB-DC244C)
 ![Google Gemini](https://img.shields.io/badge/Google-Gemini-orange)
-![Tesseract OCR](https://img.shields.io/badge/Tesseract-OCR-green)
-![Qdrant](https://img.shields.io/badge/Qdrant-Configured-DC244C)
-![n8n](https://img.shields.io/badge/n8n-Installed-EA4B71?logo=n8n)
-![License](https://img.shields.io/badge/License-MIT-blueviolet)
-
-</p>
-
----
-
-## 📖 Overview
-
-Enterprise Document Intelligence is a production-oriented backend system designed to automate the complete lifecycle of enterprise document processing.
-
-Instead of manually reviewing invoices, contracts, receipts, purchase orders, resumes, and financial documents, the platform processes uploaded PDFs through an AI-powered pipeline that extracts structured information, validates results, stores them in a relational database, and prepares documents for semantic search and Retrieval-Augmented Generation (RAG).
-
-The project focuses on building production-quality backend architecture rather than only demonstrating AI capabilities. It follows software engineering best practices such as layered architecture, dependency injection, repository pattern, centralized exception handling, schema validation, and RESTful API design.
-
-This project is being developed as a flagship portfolio project to demonstrate practical skills in AI Engineering, Backend Development, Enterprise Software Architecture, and Intelligent Document Processing.
-
-### Project Objectives
-
-- Automate document processing using OCR and Large Language Models (LLMs)
-- Extract structured business information from unstructured PDFs
-- Persist processed data using PostgreSQL
-- Build production-style REST APIs with FastAPI
-- Enable semantic document retrieval using vector embeddings
-- Implement Retrieval-Augmented Generation (RAG)
-- Demonstrate scalable backend architecture suitable for enterprise applications
-- Showcase AI engineering best practices in a real-world project
+![Tesseract](https://img.shields.io/badge/Tesseract-OCR-green)
+![Sentence Transformers](https://img.shields.io/badge/Sentence--Transformers-Embeddings-yellow)
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react)
+![Vite](https://img.shields.io/badge/Vite-Build_Tool-646CFF)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
+![n8n](https://img.shields.io/badge/n8n-Automation-EA4B71)
+![pytest](https://img.shields.io/badge/pytest-Testing-0A9EDC)
 
 ---
 
-## 🚧 Current Project Status
+## Overview
 
-**Current Version:** V1 (Backend Foundation) — 9 of ~22 planned milestones complete
+The Enterprise Document Intelligence Platform is a full-stack AI application designed to automate the processing and understanding of enterprise PDF documents.
 
-### ✅ Completed
+The platform accepts documents such as resumes, invoices, contracts, purchase orders, receipts, and other business documents, then processes them through an AI-powered pipeline consisting of:
 
-**Infrastructure**
-- Docker Desktop & Docker Compose
-- PostgreSQL
-- Qdrant (installed and running, not yet integrated into the pipeline)
-- n8n Community Edition (installed and running, no workflows built yet)
-- Local development environment
-
-**Backend Foundation**
-- FastAPI project structure with API versioning
-- Environment configuration via Pydantic Settings
-- Health check API
-- Swagger / OpenAPI documentation
-- Dependency injection
-
-**OCR Pipeline**
-- PDF upload, PDF → image conversion, image preprocessing
-- Tesseract OCR integration with per-page confidence scoring
-- Structured OCR response models
-
-**AI Extraction Pipeline**
-- Google Gemini integration with a document-type-aware prompt builder
-- Structured JSON output with per-field confidence scores
-- Response parsing and validation
-- Pipeline-level exception handling (distinguishes OCR-stage vs. extraction-stage failures)
-
-**Database Layer**
-- SQLAlchemy ORM, Alembic migrations, PostgreSQL persistence
-- Repository pattern (`DocumentRepository`, `OCRResultRepository`, `ExtractionResultRepository`)
-
-**Document Processing**
-- End-to-end OCR → AI extraction pipeline with persistence at each stage
-- Document status tracking (`uploaded` → `ocr_complete` → `extraction_complete` / `failed`)
-- Document retrieval APIs
-- Input validation and error handling
-
-### 🚧 In Progress
-
-- Automated test suite (unit + integration tests for the existing pipeline)
-- Vector embeddings and Qdrant integration
-- Semantic and hybrid search
+- File validation
+- OCR processing
+- Text chunking
+- Semantic embeddings
+- Vector storage and retrieval
+- AI-powered structured extraction
+- PostgreSQL persistence
 - Retrieval-Augmented Generation (RAG)
-- Human review workflow
-- Dashboard
+- Automated workflow orchestration
+
+The system combines a FastAPI backend, PostgreSQL database, Qdrant vector database, Google Gemini, Tesseract OCR, React/Vite frontend, and n8n automation.
+
+The project was developed through ten structured phases, progressing from infrastructure and document ingestion through AI extraction, RAG, frontend integration, automation, production hardening, and final documentation.
 
 ---
 
-## 🏛 Architecture
+## Key Features
 
-The backend follows a layered architecture — each layer has a single responsibility, and no layer reaches past the one directly below it:
+### Intelligent Document Processing
+
+- PDF document upload
+- File type validation
+- File size validation
+- Multi-page PDF processing
+- PDF-to-image conversion
+- Image preprocessing
+- Tesseract OCR
+- Per-page OCR confidence scoring
+
+### AI Information Extraction
+
+- Google Gemini integration
+- Document-type-aware prompts
+- Structured JSON extraction
+- Field-level confidence information
+- Overall extraction confidence
+- Confidence-based human review flag
+- LLM response validation
+- Handling of malformed extraction responses
+
+### Semantic Search and RAG
+
+- Document text chunking
+- Sentence Transformer embeddings
+- Qdrant vector storage
+- Semantic similarity search
+- Document-specific retrieval
+- Retrieval pipeline
+- Context construction
+- Gemini-powered question answering
+- Safe fallback when relevant context is unavailable
+
+### Data Persistence
+
+- PostgreSQL
+- SQLAlchemy ORM
+- Alembic migrations
+- Repository pattern
+- Document metadata persistence
+- OCR result persistence
+- Extraction result persistence
+- Processing status tracking
+
+### Workflow Automation
+
+The project includes two n8n workflows:
+
+1. **FastAPI Health Check**
+2. **Document Processing Automation**
+
+The document processing workflow sends uploaded documents to the FastAPI processing pipeline and routes the result based on whether human review is required.
+
+### Frontend
+
+The project includes a React/Vite frontend for interacting with the backend document processing and question-answering APIs.
+
+---
+
+## Architecture
+
+The application follows a layered backend architecture:
 
 ```text
-API Layer            → handles HTTP requests and responses
-     │
-Service Layer        → business logic, orchestrates the pipeline
-     │
-Repository Layer      → encapsulates all database operations
-     │
-Database              → persistent application data
+                    React / Vite Frontend
+                             |
+                             v
+                     FastAPI REST API
+                             |
+              +--------------+--------------+
+              |              |              |
+              v              v              v
+        Upload / OCR    Documents       RAG / QA
+              |              |              |
+              +--------------+--------------+
+                             |
+                             v
+                       Service Layer
+                             |
+          +------------------+------------------+
+          |                  |                  |
+          v                  v                  v
+     OCR Services       Extraction        RAG Services
+                         Services
+          |                  |                  |
+          v                  v                  v
+     Tesseract           Gemini           Retrieval
+                                           Pipeline
+                                               |
+                                               v
+                                            Qdrant
+                             |
+                             v
+                     Repository Layer
+                             |
+                             v
+                         PostgreSQL
 ```
 
-### Processing pipeline
+---
+
+## End-to-End Document Processing Pipeline
+
+The complete document processing flow is:
 
 ```text
-Upload PDF
-    │
-    ▼
+PDF Upload
+    |
+    v
 File Validation
-    │
-    ▼
-PDF → Image Conversion  ─┐
-    │                    │  OCR Stage (Tesseract)
-Image Preprocessing      │  produces per-page text +
-    │                    │  confidence scores
-Tesseract OCR           ─┘
-    │
-    ▼
-Prompt Building + Google Gemini Extraction
-    │  produces structured fields with
-    │  per-field confidence scores
-    ▼
-Response Validation
-    │
-    ▼
-Repository Layer (SQLAlchemy)
-    │
-    ├──▶ Documents
-    ├──▶ OCR Results
-    └──▶ Extraction Results
-              │
-              ▼
-        PostgreSQL Database
-              │
-              ▼
-        Document Retrieval APIs
+    |
+    v
+OCR Processing
+(Tesseract / Poppler)
+    |
+    v
+Text Chunking
+    |
+    v
+Semantic Embeddings
+(Sentence Transformers)
+    |
+    +----------------------+
+    |                      |
+    v                      v
+Qdrant                 Gemini
+Vector Index           Structured Extraction
+    |                      |
+    +----------+-----------+
+               |
+               v
+          PostgreSQL
+           Persistence
 ```
 
-**Planned extension (V1 remainder):**
+### 1. Upload
+
+The client uploads a PDF document through the FastAPI API.
+
+The system validates the uploaded file according to configured file type and size limits.
+
+### 2. OCR
+
+The PDF is converted into images and processed using Tesseract OCR.
+
+The OCR layer produces:
+
+- Extracted text
+- Page count
+- OCR confidence information
+- Processing information
+
+### 3. Semantic Indexing
+
+The extracted text is divided into chunks and converted into semantic embeddings using Sentence Transformers.
+
+The resulting vectors and document metadata are stored in Qdrant for later semantic retrieval.
+
+### 4. AI Extraction
+
+OCR text is passed to the extraction service.
+
+Google Gemini receives a document-type-aware prompt and returns structured information.
+
+The response is parsed and validated before the extraction result is persisted.
+
+The extraction process also produces confidence information and can mark a document as requiring human review.
+
+### 5. Persistence
+
+Document processing information is stored in PostgreSQL.
+
+The main persisted entities include:
 
 ```text
-PostgreSQL → Vector Embeddings → Qdrant → Semantic/Hybrid Search → RAG → Human Review UI
+Document
+   |
+   +---- OCRResult
+   |
+   +---- ExtractionResult
 ```
 
-### Why these technology choices
+Processing status is tracked throughout the pipeline.
 
-- **PostgreSQL over SQLite** — supports concurrent writes and JSONB columns for flexible, per-document-type extraction fields without a schema migration for every new document type. SQLite doesn't hold up under the concurrent-access assumptions of a real backend service.
-- **Repository pattern over direct ORM calls in routes/services** — `OCRService` and `ExtractionService` have zero knowledge that a database exists; only the repository layer touches a `Session`. This keeps both services independently reusable (e.g., callable from a future batch script or n8n workflow with no database at all) and means a future storage backend change is isolated to the repository implementations.
-- **Qdrant over Pinecone/Chroma (planned)** — self-hostable via Docker alongside the rest of the stack, avoiding a managed-API dependency and demonstrating real vector infrastructure rather than just an API key integration.
-- **Google Gemini for extraction** — structured JSON output via prompt-enforced schema, chosen for cost and latency during iterative development; the LLM client is isolated behind a thin wrapper (`app/llm/client.py`) specifically so the provider can be swapped without touching the extraction service or API layer.
-- **Structured output with per-field confidence over regex-based extraction** — the goal is a system that understands documents contextually, with every extracted value carrying a confidence score that drives human-review routing, not a system that pattern-matches known formats.
-- **FastAPI + Pydantic throughout** — schema validation at every layer boundary (request bodies, LLM response parsing, ORM models) rather than trusting data shapes implicitly at any point in the pipeline.
+### 6. Retrieval
 
----
+When a question is submitted, the question is converted into an embedding and compared against indexed document chunks in Qdrant.
 
-## ✨ Features
+Retrieval can optionally be scoped to a specific document.
 
-### Implemented
+### 7. RAG Question Answering
 
-**Intelligent Document Processing**
-- PDF upload with multi-page support
-- PDF → image conversion and preprocessing for improved OCR accuracy
-- OCR text extraction via Tesseract with per-page confidence scoring
+Retrieved document context is passed to the Gemini generation service.
 
-**AI Information Extraction**
-- Google Gemini integration with dynamic, document-type-aware prompts
-- Structured JSON output with per-field confidence scores
-- Document type identified as part of the LLM extraction output (not a separate classification model)
-- Response validation and parsing, with malformed-output handling
+The generated answer is grounded in the retrieved enterprise document content.
 
-**Data Persistence**
-- PostgreSQL via SQLAlchemy ORM and Alembic migrations
-- Repository pattern for all database access
-- Document metadata, OCR results, and extraction results stored with full linkage
-- Processing status tracked per document, including failure states
-
-**Backend Architecture**
-- Layered architecture: API → Service → Repository → Database
-- Dependency injection throughout (services and repositories are constructed via FastAPI's DI, not instantiated ad hoc)
-- Centralized configuration via Pydantic Settings
-- Versioned REST APIs with Swagger/OpenAPI documentation
-
-**Reliability**
-- Pipeline-level exception handling that distinguishes which stage failed (OCR vs. extraction) rather than returning generic errors
-- Input and file-type validation
-- Database consistency on failure (a failed pipeline run is recorded, not silently lost)
-
-### REST APIs
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/v1/health` | Health check |
-| POST | `/api/v1/upload` | Upload PDF |
-| POST | `/api/v1/ocr` | OCR processing |
-| POST | `/api/v1/extract` | AI extraction from provided text |
-| POST | `/api/v1/documents/process` | Complete OCR → AI extraction → persistence pipeline |
-| GET | `/api/v1/documents` | List processed documents (paginated) |
-| GET | `/api/v1/documents/{id}` | Retrieve a processed document, its OCR result, and its extraction result |
-
-### In Progress (V1)
-
-- **Semantic search** — vector embeddings, Qdrant integration, similarity retrieval
-- **Retrieval-Augmented Generation (RAG)** — context retrieval, question answering, citation-aware responses
-- **Human review workflow** — review queue, manual corrections, confidence-based routing, audit trail
-- **Dashboard** — processing statistics, confidence metrics, document history, search interface
-- **Automated test suite** — unit and integration tests for the pipeline built so far
-
-### Known limitations (current state)
-
-- No automated test suite yet — the pipeline has been manually verified via Swagger against valid PDFs, invalid file types, and corrupted files, but there is no `pytest` coverage in the repo yet.
-- Single-document processing only — no batch upload support.
-- No retry logic for transient OCR or LLM API failures.
-- OCR accuracy is dependent on scan/photo quality; no fallback to an LLM-vision OCR pass yet.
-- n8n and Qdrant are running in the local stack but not yet wired into the application.
-
-### Planned (V2)
-
-**Enterprise AI** — multi-document reasoning, AI agents, automated workflow orchestration, document relationship graph
-
-**Enterprise Integrations** — AWS S3, Azure Blob Storage, Google Drive, SharePoint, email ingestion, REST webhooks
-
-**Security** — JWT authentication, RBAC, API keys, audit logging, encryption, secrets management
-
-**Scalability** — Redis caching, background workers (Celery), async processing, batch uploads, Kubernetes deployment
+If relevant context cannot be found, the system can return a safe fallback instead of fabricating an answer.
 
 ---
 
-## 🛠 Technology Stack
+## RAG Architecture
 
-| Category | Technology |
+The question-answering pipeline follows a Retrieval-Augmented Generation architecture:
+
+```text
+User Question
+      |
+      v
+Question Embedding
+      |
+      v
+Qdrant Semantic Retrieval
+      |
+      v
+Relevant Document Chunks
+      |
+      v
+Context Construction
+      |
+      v
+Google Gemini
+      |
+      v
+Grounded Answer
+```
+
+The RAG implementation uses Sentence Transformers for embeddings and Qdrant for semantic retrieval.
+
+Questions can be asked across indexed documents or scoped to a specific document where supported by the API.
+
+The retrieved context is passed to Gemini rather than relying solely on the model's general knowledge.
+
+---
+
+## Technology Stack
+
+| Layer | Technology |
 |---|---|
-| Language | Python 3.12 |
-| Backend Framework | FastAPI |
-| API Documentation | Swagger / OpenAPI |
-| Configuration | Pydantic Settings |
+| Language | Python |
+| Backend | FastAPI |
+| Frontend | React + Vite |
 | Database | PostgreSQL |
 | ORM | SQLAlchemy |
-| Database Migrations | Alembic |
-| OCR Engine | Tesseract OCR |
-| AI Model | Google Gemini Flash |
-| Vector Database | Qdrant (installed, integration in progress) |
-| Workflow Automation | n8n Community (installed, no workflows yet) |
-| Containerization | Docker & Docker Compose |
-| Version Control | Git & GitHub |
+| Migrations | Alembic |
+| OCR | Tesseract OCR |
+| PDF Processing | Poppler |
+| LLM | Google Gemini |
+| Embeddings | Sentence Transformers |
+| Vector Database | Qdrant |
+| Automation | n8n |
+| Containerization | Docker / Docker Compose |
+| Testing | pytest |
+| Version Control | Git / GitHub |
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 Enterprise-Document-Intelligence/
-├── backend/
-│   └── app/
-│       ├── api/v1/
-│       ├── core/
-│       ├── db/
-│       │   ├── models/
-│       │   ├── repositories/
-│       │   └── migrations/
-│       ├── exceptions/
-│       ├── llm/
-│       ├── ocr/
-│       ├── schemas/
-│       ├── services/
-│       ├── storage/
-│       ├── utils/
-│       └── main.py
-├── docs/
-│   ├── DAILY_LOG.md
-│   └── SETUP.md
-├── sample_documents/
-├── docker-compose.yml
-├── .env.example
-└── README.md
+|
++-- backend/
+|   |
+|   +-- app/
+|       |
+|       +-- api/
+|       |   +-- v1/
+|       |       +-- documents.py
+|       |       +-- extraction.py
+|       |       +-- health.py
+|       |       +-- ocr.py
+|       |       +-- qa.py
+|       |       +-- router.py
+|       |       +-- upload.py
+|       |
+|       +-- core/
+|       |   +-- config.py
+|       |   +-- logging.py
+|       |
+|       +-- db/
+|       |   +-- models/
+|       |   +-- repositories/
+|       |   +-- base.py
+|       |   +-- session.py
+|       |
+|       +-- exceptions/
+|       |
+|       +-- llm/
+|       |   +-- client.py
+|       |   +-- prompts.py
+|       |   +-- response_parser.py
+|       |
+|       +-- ocr/
+|       |
+|       +-- schemas/
+|       |
+|       +-- services/
+|       |   +-- chunking_service.py
+|       |   +-- document_processing_service.py
+|       |   +-- document_query_service.py
+|       |   +-- embedding_service.py
+|       |   +-- extraction_service.py
+|       |   +-- ocr_service.py
+|       |   +-- rag_generation_service.py
+|       |   +-- rag_qa_service.py
+|       |   +-- retrieval_pipeline_service.py
+|       |   +-- semantic_indexing_service.py
+|       |   +-- upload_service.py
+|       |   +-- vector_store_service.py
+|       |
+|       +-- storage/
+|       +-- utils/
+|       +-- main.py
+|
++-- frontend/
+|   |
+|   +-- src/
+|       +-- components/
+|       +-- services/
+|       +-- App.jsx
+|       +-- App.css
+|       +-- index.css
+|       +-- main.jsx
+|
++-- n8n/
+|   +-- workflows/
+|       +-- Document Processing Automation.json
+|       +-- FastAPI Health Check.json
+|
++-- docs/
+|   +-- DAILY_LOG.md
+|   +-- SETUP.md
+|
++-- docker-compose.yml
++-- .env.example
++-- README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## REST API Documentation
+
+The backend exposes versioned REST APIs under `/api/v1`.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/v1/health` | Health check for the backend service |
+| POST | `/api/v1/upload` | Upload a PDF document |
+| POST | `/api/v1/ocr` | Run OCR processing |
+| POST | `/api/v1/extract` | Run AI-based structured extraction |
+| POST | `/api/v1/documents/process` | Run the complete document processing pipeline |
+| GET | `/api/v1/documents` | List processed documents |
+| GET | `/api/v1/documents/{document_id}` | Retrieve a document and its processing results |
+| POST | `/api/v1/qa` | Ask a natural-language question using RAG |
+
+### Health Check
+
+`GET /api/v1/health`
+
+Returns the current application health status.
+
+### Document Processing
+
+`POST /api/v1/documents/process`
+
+Runs the complete processing pipeline:
+
+```text
+Upload
+  |
+  v
+OCR
+  |
+  v
+Semantic Indexing
+  |
+  v
+AI Extraction
+  |
+  v
+PostgreSQL Persistence
+```
+
+### RAG Question Answering
+
+`POST /api/v1/qa`
+
+Example request:
+
+```json
+{
+  "query": "What programming languages are mentioned?",
+  "limit": 5
+}
+```
+
+The endpoint retrieves relevant document context and generates an answer using the configured LLM.
+
+---
+
+## n8n Automation
+
+The project includes two exported n8n workflows stored under `n8n/workflows/`.
+
+### FastAPI Health Check
+
+```text
+Manual Trigger
+      |
+      v
+HTTP GET
+http://host.docker.internal:8000/api/v1/health
+```
+
+This workflow manually checks whether the FastAPI backend is reachable.
+
+### Document Processing Automation
+
+```text
+Webhook
+   |
+   v
+FastAPI Document Processing
+   |
+   v
+Processing Result
+   |
+   +-----------------------------+
+   |                             |
+   v                             v
+requires_review = true      requires_review = false
+   |                             |
+   v                             v
+Human Review Required       Auto Approved
+```
+
+The workflow also contains an error branch for processing failures.
+
+The webhook accepts the uploaded document as a binary field named `file`.
+
+The exported workflow files are:
+
+- `n8n/workflows/Document Processing Automation.json`
+- `n8n/workflows/FastAPI Health Check.json`
+
+---
+
+## Configuration
+
+The application uses environment-based configuration through Pydantic Settings.
+
+Sensitive configuration values are stored in environment files and excluded from version control. The repository includes `.env.example` as a configuration reference.
+
+Typical configuration includes:
+
+```env
+DATABASE_URL=...
+QDRANT_URL=...
+N8N_URL=...
+GEMINI_API_KEY=...
+```
+
+Additional configuration controls include:
+
+- Upload directory
+- Maximum upload size
+- Allowed file types
+- Tesseract executable path
+- Poppler path
+- OCR language
+- PDF DPI
+- OCR confidence threshold
+- Gemini model
+- Gemini extraction parameters
+- Extraction confidence threshold
+
+> Never commit real API keys, passwords, or other secrets.
+
+---
+
+## Local Setup
 
 ### Prerequisites
 
-| Software | Version |
-|---|---|
-| Python | 3.12+ |
-| Docker Desktop | Latest |
-| Git | Latest |
-| Tesseract OCR | Latest |
-| Poppler | Latest |
-| Google Gemini API Key | Required |
+Install the following:
 
-### Clone the repository
+- Python 3.10+
+- Docker Desktop
+- Git
+- Node.js and npm
+- Tesseract OCR
+- Poppler
+- Google Gemini API access
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/reubx03/Enterprise-Document-Intelligence.git
 cd Enterprise-Document-Intelligence
 ```
 
-### Start infrastructure
+### 2. Start Infrastructure
+
+From the project root:
 
 ```bash
 docker compose up -d
 ```
 
-This starts PostgreSQL, Qdrant, and n8n Community Edition. Verify with `docker ps`.
+The Docker Compose stack provides:
 
-### Backend setup
+- PostgreSQL
+- Qdrant
+- n8n
+
+Verify the services:
+
+```bash
+docker compose ps
+```
+
+### 3. Configure the Backend
+
+Move into the backend directory:
 
 ```bash
 cd backend
+```
+
+Create a virtual environment:
+
+```bash
 python -m venv venv
 ```
 
-Activate the environment:
+Windows:
 
 ```bash
-# Windows
 .\venv\Scripts\activate
+```
 
-# Linux / macOS
+Linux / macOS:
+
+```bash
 source venv/bin/activate
 ```
 
@@ -334,147 +597,322 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-### Environment variables
+Create the backend environment file `.env`.
 
-Create a `.env` file inside `backend/`:
+Configure the required database, Qdrant, n8n, OCR, upload, and Gemini settings using the repository's environment example as a reference.
 
-```env
-GOOGLE_API_KEY=your_api_key
-DATABASE_URL=postgresql://docint:docint@localhost:5432/document_intelligence
-QDRANT_URL=http://localhost:6333
-QDRANT_COLLECTION=document_embeddings
-```
+### 4. Run Database Migrations
 
-### Run database migrations
+From the backend directory:
 
 ```bash
 alembic upgrade head
 ```
 
-### Run the backend
+### 5. Start FastAPI
+
+From the backend directory:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-The API is now available at `http://127.0.0.1:8000`.
+The backend will be available at `http://127.0.0.1:8000`.
 
-### Available services
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- ReDoc: `http://127.0.0.1:8000/redoc`
 
-| Service | URL |
+### 6. Start the Frontend
+
+From the project root:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend will be available at `http://localhost:5173`.
+
+The frontend uses its environment configuration to determine the FastAPI backend URL.
+
+---
+
+## Services
+
+| Service | Address |
 |---|---|
 | FastAPI | http://127.0.0.1:8000 |
 | Swagger UI | http://127.0.0.1:8000/docs |
 | ReDoc | http://127.0.0.1:8000/redoc |
-| Health Endpoint | http://127.0.0.1:8000/api/v1/health |
+| Frontend | http://localhost:5173 |
 | PostgreSQL | localhost:5432 |
+| Qdrant | http://localhost:6333 |
 | Qdrant Dashboard | http://localhost:6333/dashboard |
 | n8n | http://localhost:5678 |
 
 ---
 
-## 📄 Example Request / Response
+## Testing
 
-Via Swagger, `POST /api/v1/documents/process` with `invoice.pdf` and `document_type=auto`:
+The backend contains automated unit and integration tests using pytest.
+
+Run the complete test suite from the backend directory:
+
+```bash
+python -m pytest tests -v
+```
+
+The most recent full test run produced:
+
+```text
+139 collected
+135 passed
+4 failed
+2 warnings
+```
+
+The known failures were associated with:
+
+- Qdrant persistent-state/search isolation between test runs
+- Outdated assertions expecting previous error-message text
+- Vector search ordering/state behavior
+
+The document processing API integration tests were subsequently updated for the hardened error messages and passed:
+
+```text
+3 passed
+1 warning
+```
+
+The warning was related to the current Starlette/httpx TestClient dependency behavior.
+
+The project therefore does not currently claim a 100% passing test suite.
+
+A real end-to-end RAG integration test was also successfully validated earlier using:
+
+- Sentence Transformer embeddings
+- Qdrant
+- Gemini
+- Real document context
+
+Repeated live Gemini testing was limited after the Gemini free-tier quota was reached during development.
+
+---
+
+## Reliability and Error Handling
+
+The application uses stage-specific pipeline exceptions to distinguish failures occurring during different processing stages.
+
+Relevant stages include:
+
+- OCR
+- Indexing
+- Extraction
+
+The API returns safe client-facing error messages while detailed internal exceptions are logged server-side.
+
+For example, an OCR failure is exposed as:
 
 ```json
 {
-  "document_id": "45a4891e-8a0c-4b72-9831-90c1397692dd",
-  "document_type": "invoice",
-  "fields": {
-    "invoice_number": { "value": "INV-1001", "confidence": 0.98 },
-    "vendor": { "value": "ABC Pvt Ltd", "confidence": 0.96 }
-  },
-  "overall_confidence": 0.94,
-  "requires_review": false
+  "stage": "ocr",
+  "detail": "Document OCR processing failed. Please try again later."
 }
 ```
 
----
+This prevents internal implementation details and upstream provider errors from being unnecessarily exposed to API clients.
 
-## 🧪 Testing
-
-Manually verified via Swagger against:
-
-- Valid single- and multi-page PDF processing
-- End-to-end OCR → AI extraction → persistence pipeline
-- Invalid file type rejection
-- Corrupted PDF handling
-- Invalid document UUID lookups
-- Stage-specific failure handling (OCR failures vs. extraction failures return distinguishable errors)
-
-An automated `pytest` suite covering these scenarios is in progress — see [Known limitations](#known-limitations-current-state). Once added, run it with:
-
-```bash
-pytest
-```
+Incoming API requests are also validated using Pydantic schemas before reaching the processing pipeline.
 
 ---
 
-## 📅 Development Roadmap
+## Production Hardening
 
-### V1 — Backend Foundation
+The current implementation includes the following production-oriented safeguards:
 
-**Infrastructure:** ✅ Docker environment · ✅ PostgreSQL · ✅ Qdrant installed · ✅ n8n installed
+- Environment-based configuration
+- `.env` files excluded from Git
+- No tracked API keys or credentials
+- Restricted CORS origins for the local frontend
+- File type validation
+- File size limits
+- Stage-specific pipeline exceptions
+- Safe client-facing API error messages
+- Server-side error logging
+- PostgreSQL persistent Docker volume
+- Qdrant persistent Docker volume
+- n8n persistent Docker volume
+- Docker restart policies
+- API input validation
+- Health endpoint
+- Automated unit and integration testing
 
-**Backend:** ✅ FastAPI structure · ✅ API versioning · ✅ Health endpoint · ✅ Swagger docs
-
-**OCR Pipeline:** ✅ Upload · ✅ PDF→image · ✅ Preprocessing · ✅ Tesseract · ✅ Confidence scoring
-
-**AI Extraction:** ✅ Gemini integration · ✅ Prompt builder · ✅ JSON parsing · ✅ Confidence-based schema
-
-**Database Layer:** ✅ SQLAlchemy · ✅ Alembic · ✅ Repository pattern · ✅ Dependency injection
-
-**Processing Pipeline:** ✅ End-to-end pipeline · ✅ Persistence · ✅ Retrieval APIs · ✅ Error handling
-
-**In progress:** ⬜ Automated test suite · ⬜ Vector embeddings · ⬜ Qdrant integration · ⬜ Semantic/hybrid search · ⬜ RAG · ⬜ Human review workflow · ⬜ Dashboard
-
-### V2 — Enterprise Platform
-
-- Multi-document reasoning, AI agents, autonomous workflows, document relationship graph
-- JWT authentication, RBAC, audit logging, background workers, Redis caching, batch upload
-- AWS S3 / Azure Blob / Google Drive / SharePoint integrations, Kubernetes deployment, CI/CD
-- n8n workflow automation (email ingestion, approval workflows, notifications)
-- Processing and confidence analytics dashboard
+The current deployment configuration is primarily intended for local/self-hosted environments.
 
 ---
 
-## 🎓 Engineering Concepts Demonstrated
+## Known Limitations
 
-**Backend Engineering** — REST API design, layered architecture, dependency injection, repository pattern, service layer pattern, centralized exception handling, configuration management
+The current portfolio version intentionally focuses on the core enterprise document intelligence workflow.
 
-**Database Engineering** — PostgreSQL, SQLAlchemy ORM, Alembic migrations, relational data modeling with JSONB for flexible schemas
+Current limitations include:
 
-**Artificial Intelligence** — OCR pipelines, prompt engineering, LLM integration, structured output validation, confidence scoring, information extraction
+- No authentication
+- No role-based access control
+- No cloud deployment
+- No Kubernetes deployment
+- No CI/CD pipeline
+- No distributed background job queue
+- No cloud object-storage integration
+- No advanced human-review dashboard
+- Gemini API availability depends on the configured API quota
+- OCR quality depends on source document quality
+- Some Qdrant integration tests require better isolation from persistent local vector-store state
+- No formal performance/load benchmarks have been captured
 
-**Enterprise Software Practices** — Docker-based local infrastructure, API documentation, environment/secrets management, production-oriented project structure
-
----
-
-## 📚 References
-
-Built using FastAPI, SQLAlchemy, PostgreSQL, Alembic, Docker, Tesseract OCR, Google Gemini, Qdrant, and n8n. Official documentation for each is recommended for deeper understanding.
-
----
-
-## 👨‍💻 Author
-
-Developed by **Reuben Mathew Tharakan** — B.Tech in Artificial Intelligence & Data Science
-
-This repository is a flagship portfolio project demonstrating production-oriented AI backend engineering, intelligent document processing, and enterprise software architecture.
-
-## 📄 License
-
-Released under the MIT License. You are free to learn from, reference, and adapt this code in accordance with the license terms.
-
-## ⭐ Support
-
-If you found this project useful: star the repository, share feedback, open an issue for bugs or suggestions, or follow along as it evolves.
+These limitations define the current scope rather than indicating missing core functionality.
 
 ---
 
-<p align="center">
+## Future Enhancements
 
-**Built with FastAPI, PostgreSQL, Tesseract OCR, Google Gemini, Docker, and Qdrant.**
+Potential future versions could add:
 
-</p>
+- JWT authentication
+- Role-based access control
+- Human review dashboard
+- Background document processing
+- Celery or similar task workers
+- Redis caching
+- Batch document processing
+- Cloud object storage
+- Email and cloud-drive ingestion
+- Hybrid keyword + semantic search
+- Multi-document reasoning
+- AI agents
+- Audit logging
+- CI/CD pipelines
+- Kubernetes deployment
+- Cloud deployment
+- Performance benchmarking
+- Improved Qdrant test isolation
+
+---
+
+## 10-Phase Project Roadmap
+
+The project was developed through the following ten phases:
+
+1. Foundation / Infrastructure
+2. Upload
+3. OCR / Processing
+4. AI Extraction / Persistence
+5. Integration Testing
+6. RAG / Semantic Search
+7. Frontend / UI
+8. n8n Automation
+9. Production Hardening
+10. Documentation / Portfolio / Deployment
+
+Current development has completed the core implementation through Phase 9.
+
+Phase 10 focuses on final documentation, portfolio presentation, and deployment preparation.
+
+---
+
+## Engineering Concepts Demonstrated
+
+### Backend Engineering
+
+- REST API design
+- FastAPI
+- Pydantic validation
+- Dependency injection
+- Layered architecture
+- Service layer pattern
+- Repository pattern
+- API versioning
+- Centralized exception handling
+
+### Database Engineering
+
+- PostgreSQL
+- SQLAlchemy
+- Alembic
+- Relational data modeling
+- Repository-based persistence
+- Structured extraction persistence
+
+### AI Engineering
+
+- OCR pipelines
+- Prompt engineering
+- LLM integration
+- Structured LLM output
+- Response validation
+- Confidence scoring
+- Embedding generation
+- Vector databases
+- Semantic retrieval
+- Retrieval-Augmented Generation
+
+### Automation
+
+- n8n webhooks
+- API-based workflow orchestration
+- Human-review routing
+- Automatic approval routing
+- Workflow error handling
+
+### Software Engineering
+
+- Environment-based configuration
+- Docker Compose
+- Automated testing
+- Logging
+- API validation
+- Safe error handling
+- Git-based development workflow
+
+---
+
+## Portfolio / Resume Summary
+
+**Enterprise Document Intelligence Platform**
+
+Built a full-stack AI document processing platform using FastAPI, PostgreSQL, Qdrant, Tesseract OCR, Google Gemini, React, Docker, and n8n.
+
+Implemented an end-to-end pipeline that:
+
+- Accepts enterprise PDF documents
+- Performs OCR and confidence scoring
+- Extracts structured information using Gemini
+- Persists document results in PostgreSQL
+- Generates semantic embeddings
+- Stores vectors in Qdrant
+- Retrieves relevant document context
+- Performs RAG-based question answering
+- Exposes versioned REST APIs
+- Provides a React/Vite frontend
+- Automates document processing using n8n
+- Routes low-confidence results for human review
+- Handles stage-specific failures with production-safe API responses
+
+The project demonstrates practical AI engineering, backend architecture, OCR processing, LLM integration, vector search, RAG, workflow automation, testing, and production-oriented software engineering.
+
+---
+
+## License
+
+This project is intended as a portfolio and educational project.
+
+---
+
+## Author
+
+Reuben Mathew Tharakan
+
+B.Tech in Artificial Intelligence & Data Science
+
+This project was built as a flagship portfolio project demonstrating practical AI engineering, intelligent document processing, backend development, RAG systems, vector search, workflow automation, and enterprise software architecture.
