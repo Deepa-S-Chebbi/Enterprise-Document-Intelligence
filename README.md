@@ -41,6 +41,34 @@ The project was developed through ten structured phases, progressing from infras
 
 ---
 
+## Demo / Screenshots
+
+### Frontend — Document Processing & RAG
+
+The React frontend provides document upload, processing status, document selection, and document-scoped RAG question answering.
+
+![Frontend document processing and RAG](docs/screenshots/frontend-rag.png)
+
+### FastAPI — AI Document Extraction
+
+The document processing API returns structured information extracted from the uploaded document, including field values and confidence scores.
+
+![FastAPI document extraction response](docs/screenshots/api-extraction.png)
+
+### n8n — Document Processing Automation
+
+The n8n workflow orchestrates document processing and routes results to human review or automatic approval based on the extraction confidence.
+
+![n8n document processing automation](docs/screenshots/n8n-automation.png)
+
+### REST API — Swagger Documentation
+
+The FastAPI Swagger interface exposes the platform's versioned REST API for upload, OCR, extraction, document processing, document retrieval, health checks, and RAG question answering.
+
+![Swagger REST API overview](docs/screenshots/swagger-overview.png)
+
+---
+
 ## Key Features
 
 ### Intelligent Document Processing
